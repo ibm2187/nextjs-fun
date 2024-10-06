@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  # MongoDB Service
+  mongo:
+    image: mongo:5.0
+    container_name: mongodb_container
+    command: mongod --auth
+    environment:
+      MONGO_INITDB_DATABASE: my_db
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      custom_network:
+        ipv4_address: 172.20.0.2  # Static IP for MongoDB
+
+  # PostgreSQL Service (for example, if needed)
+  postgres:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: example
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      custom_network:
+        ipv4_address: 172.20.0.3  # Static IP for PostgreSQL (if needed)
+
+volumes:
+  mongo_data:
+  postgres_data:
+
+networks:
+  custom_network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16  # Define the network subnet
